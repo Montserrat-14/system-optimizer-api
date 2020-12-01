@@ -2,6 +2,7 @@ package com.montserrat14.systemoptimizer.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.montserrat14.systemoptimizer.SwrlAPI;
 import com.montserrat14.systemoptimizer.model.Problem;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ public class ProblemController {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    Map<Integer,Problem> list = new HashMap<>();
+    Map<Integer,Problem> problems = new HashMap<>();
 
     @RequestMapping(
             value = "/problem",
@@ -24,24 +25,27 @@ public class ProblemController {
     public void postBody(@RequestBody String problemRequest) throws JsonProcessingException {
 
         Problem problem = objectMapper.readValue(problemRequest,Problem.class);
-        list.put(problem.getId(),problem);
+        problems.put(problem.getId(),problem);
 
-        System.out.println(problem.getName());
+        ArrayList<String> listOfAlgorithms = new ArrayList<String>();
+        listOfAlgorithms = SwrlAPI.getAlgorithms(problem.getnObjectives());
 
+        System.out.println("New Problem Added: " + problem.getName());
+        System.out.println(listOfAlgorithms.toString());
     }
 
-    @PutMapping(value="/update/{id}")
+    @PutMapping(value="/problem/{id}")
     public void updateProblemName(@PathVariable("id") Integer id, @RequestParam String name){
-        Problem problem = list.get(id);
+        Problem problem = problems.get(id);
 
         problem.setName(name);
 
-        list.put(id,problem);
+        problems.put(id,problem);
     }
 
-    @GetMapping("/getProblem")
+    @GetMapping("/problem")
     public Map<Integer,Problem> getProblem(){
-        return list;
+        return problems;
     }
 
 }

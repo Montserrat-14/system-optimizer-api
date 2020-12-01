@@ -40,12 +40,12 @@ public class SwrlAPI {
             SQWRLResult result = queryEngine.runSQWRLQuery("q1", query);
 
             // Process the SQWRL result
-            System.out.println("Query: " + query);
-            System.out.println("Executing query ... ");
+            //System.out.println("Query: " + query);
+            //System.out.println("Executing query ... ");
             while (result.next()) {
                 output.add(result.getNamedIndividual("alg").getShortName());
             }
-            System.out.println("Query execution completed.");
+            //System.out.println("Query execution completed.");
 
         } catch (OWLOntologyCreationException e) {
             System.err.println("Error creating OWL ontology: " + e.getMessage());
