@@ -19,8 +19,8 @@ public class ProblemController {
     @RequestMapping(
             value = "/problem",
             //method = RequestMethod.POST,
-            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
     public void postBody(@RequestBody String problemRequest) throws JsonProcessingException {
 
         Problem problem = objectMapper.readValue(problemRequest,Problem.class);
