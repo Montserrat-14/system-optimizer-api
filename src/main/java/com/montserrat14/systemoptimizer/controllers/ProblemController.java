@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class ProblemController {
 
@@ -22,16 +23,25 @@ public class ProblemController {
             //method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public void postBody(@RequestBody String problemRequest) throws JsonProcessingException {
+    public ResponseEntity<Object> postBody(@RequestBody String problemRequest) throws JsonProcessingException {
 
+        if(problemRequest.isEmpty()) {
+            return new ResponseEntity<>("Body Vazio", HttpStatus.NOT_ACCEPTABLE);
+        }
         Problem problem = objectMapper.readValue(problemRequest,Problem.class);
         problems.put(problem.getId(),problem);
 
         ArrayList<String> listOfAlgorithms = new ArrayList<String>();
+        if (problem.getnObjectives() == null) {
+            return new ResponseEntity<>("Erro Interno", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         listOfAlgorithms = SwrlAPI.getAlgorithms(problem.getnObjectives());
 
         System.out.println("New Problem Added: " + problem.getName());
         System.out.println(listOfAlgorithms.toString());
+
+        return new ResponseEntity<>(problem, HttpStatus.OK);
     }
 
     @PutMapping(value="/problem/{id}")
