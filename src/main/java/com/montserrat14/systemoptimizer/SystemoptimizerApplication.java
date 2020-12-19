@@ -12,12 +12,7 @@ public class SystemoptimizerApplication {
 	private static int numberOfObjectives = 2;
 
 	public static void main(String[] args) {
-		//SpringApplication.run(SystemoptimizerApplication.class, args);
-		listOfAlgorithms = new ArrayList<String>();
-		listOfAlgorithms = SwrlAPI.getAlgorithms(numberOfObjectives);
-
-		System.out.println(listOfAlgorithms.toString());
-
+		SpringApplication.run(SystemoptimizerApplication.class, args);
 	}
 
 }
