@@ -6,12 +6,18 @@ import java.util.List;
 public class Variables {
 
     private String name;
-    private List<Integer> listVariablesInput;
+    private String type;
+    private Integer min;
+    private Integer max;
+    private String description;
 
     public Variables(){}
-    public Variables(String name) {
+    public Variables(String name, String type, Integer min, Integer max, String description) {
         this.name = name;
-        this.listVariablesInput = new ArrayList<>();
+        this.type = type;
+        this.min = min;
+        this.max = max;
+        this.description = description;
     }
 
     public String getName() {
@@ -22,11 +28,35 @@ public class Variables {
         this.name = name;
     }
 
-    public List<Integer> getListVariablesInput() {
-        return listVariablesInput;
+    public String getType() {
+        return type;
     }
 
-    public void setListVariablesInput(List<Integer> listVariablesInput) {
-        this.listVariablesInput = listVariablesInput;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Integer getMin() {
+        return min;
+    }
+
+    public void setMin(Integer min) {
+        this.min = min;
+    }
+
+    public Integer getMax() {
+        return max;
+    }
+
+    public void setMax(Integer max) {
+        this.max = max;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
