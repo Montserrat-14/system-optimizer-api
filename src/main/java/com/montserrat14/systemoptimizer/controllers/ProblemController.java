@@ -1,5 +1,6 @@
 package com.montserrat14.systemoptimizer.controllers;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.montserrat14.systemoptimizer.SwrlAPI;
@@ -15,6 +16,7 @@ import java.util.*;
 public class ProblemController {
 
     ObjectMapper objectMapper = new ObjectMapper();
+    Random r = new Random();
 
     Map<Integer,Problem> problems = new HashMap<>();
 
@@ -28,7 +30,10 @@ public class ProblemController {
         if(problemRequest.isEmpty()) {
             return new ResponseEntity<>("Body Vazio", HttpStatus.NOT_ACCEPTABLE);
         }
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         Problem problem = objectMapper.readValue(problemRequest,Problem.class);
+
+        problem.setId(r.nextInt(1000) + 1);
         problems.put(problem.getId(),problem);
 
         ArrayList<String> listOfAlgorithms = new ArrayList<String>();
@@ -54,8 +59,8 @@ public class ProblemController {
     }
 
     @GetMapping("/problem")
-    public Map<Integer,Problem> getProblem(){
-        return problems;
+    public ResponseEntity<Map<Integer,Problem>> getProblem(){
+        return new ResponseEntity<>(problems, HttpStatus.OK);
     }
 
 }

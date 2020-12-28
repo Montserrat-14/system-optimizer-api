@@ -9,6 +9,7 @@ public class Variables {
     private String type;
     private Integer min;
     private Integer max;
+    private Boolean boolvalue;
     private String description;
 
     public Variables(){}
@@ -17,6 +18,12 @@ public class Variables {
         this.type = type;
         this.min = min;
         this.max = max;
+        this.description = description;
+    }
+    public Variables(String name, String type, Boolean boolvalue, String description) {
+        this.name = name;
+        this.type = type;
+        this.boolvalue = boolvalue;
         this.description = description;
     }
 
@@ -50,6 +57,14 @@ public class Variables {
 
     public void setMax(Integer max) {
         this.max = max;
+    }
+
+    public Boolean getBoolvalue() {
+        return boolvalue;
+    }
+
+    public void setBoolvalue(Boolean boolvalue) {
+        this.boolvalue = boolvalue;
     }
 
     public String getDescription() {
