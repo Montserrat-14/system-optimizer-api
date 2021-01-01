@@ -9,6 +9,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -46,7 +47,59 @@ public class ProblemController {
         System.out.println("New Problem Added: " + problem.getName());
         System.out.println(listOfAlgorithms.toString());
 
-        return new ResponseEntity<>(problem, HttpStatus.OK);
+
+        ArrayList<HashMap<String,ArrayList<HashMap<String, Object>>>> results = new ArrayList<>();
+        results.add(generateResult(2));
+        results.add(generateResult(2));
+
+        HashMap<String, Object> resp = new HashMap<>();
+        resp.put("id", r.nextInt(1000) + 1);
+        resp.put("results", results);
+
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
+    private HashMap<String,ArrayList<HashMap<String, Object>>> generateResult(int nObjectives) {
+        HashMap<String,ArrayList<HashMap<String, Object>>> result = new HashMap<>();
+        result.put("solution", generateSolutionList(nObjectives));
+        result.put("objective", generateObjectiveList(nObjectives));
+
+        return result;
+    }
+
+    private ArrayList<HashMap<String, Object>> generateSolutionList(int n) {
+        ArrayList<HashMap<String, Object>> result = new ArrayList<>();
+        HashMap<String, Object> variable;
+        Random r = new Random();
+        double randomValue;
+
+        for(int i = 0; i < 2; i++) {
+            randomValue = -100 + (100 - (-100)) * r.nextDouble();
+            variable = new HashMap<>();
+
+            variable.put("name", "var" + i);
+            variable.put("value", randomValue);
+            result.add(variable);
+        }
+
+        return result;
+    }
+
+    private ArrayList<HashMap<String, Object>> generateObjectiveList(int n) {
+        ArrayList<HashMap<String, Object>> result = new ArrayList<>();
+        HashMap<String, Object> variable;
+        Random r = new Random();
+        double randomValue;
+
+        for(int i = 0; i < 2; i++) {
+            randomValue = -100 + (100 - (-100)) * r.nextDouble();
+            variable = new HashMap<>();
+
+            variable.put("value", randomValue);
+            result.add(variable);
+        }
+
+        return result;
     }
 
     @PutMapping(value="/problem/{id}")
