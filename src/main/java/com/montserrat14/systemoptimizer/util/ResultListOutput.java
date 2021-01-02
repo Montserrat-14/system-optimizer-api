@@ -1,5 +1,6 @@
 package com.montserrat14.systemoptimizer.util;
 
+import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.fileoutput.FileOutputContext;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
@@ -9,24 +10,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ResultListOutput extends SolutionListOutput{
-    private FileOutputContext varFileContext;
-    private FileOutputContext funFileContext;
-    private String varFileName = "VAR";
-    private String funFileName = "FUN";
-    private Integer problemId;
+public class ResultListOutput extends SolutionListOutput {
+    private static final String VARFILENAME = "VAR";
+    private static final String FUNFILENAME = "FUN";
     private List<? extends Solution<?>> solutionList;
-    private HashMap<String, Object> resultsPayload;
+    private final HashMap<String, Object> resultsPayload;
 
-    public ResultListOutput(List<? extends Solution<?>> solutionList, Integer problemId) {
-        super(solutionList);
-        this.problemId = problemId;
-        this.varFileName += problemId;
-        this.funFileName += problemId;
-        this.setVarFileOutputContext(new DefaultFileOutputContext(varFileName));
-        this.setFunFileOutputContext(new DefaultFileOutputContext(funFileName));
+    public ResultListOutput(Algorithm<List<? extends Solution<?>>> algorithm, Integer problemId) {
+        super(algorithm.getResult());
+        this.setVarFileOutputContext(new DefaultFileOutputContext(ResultListOutput.VARFILENAME + problemId));
+        this.setFunFileOutputContext(new DefaultFileOutputContext(ResultListOutput.FUNFILENAME + problemId));
         this.resultsPayload = new HashMap<>();
-        this.resultsPayload.put("id", this.problemId);
+        this.resultsPayload.put("id", problemId);
     }
 
     public HashMap<String, Object> getResultsPayload() {
