@@ -33,6 +33,8 @@ public class ResultsController {
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
+        headers.add("Access-Control-Expose-Headers", "filename");
+        headers.add("filename", String.format("%s%s.csv", type, id));
 
         Path path = Paths.get(file.getAbsolutePath());
         ByteArrayResource resource;
