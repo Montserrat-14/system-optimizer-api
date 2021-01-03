@@ -6,6 +6,7 @@ import org.uma.jmetal.util.fileoutput.FileOutputContext;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +19,10 @@ public class ResultListOutput extends SolutionListOutput {
 
     public ResultListOutput(Algorithm<List<? extends Solution<?>>> algorithm, Integer problemId) {
         super(algorithm.getResult());
-        this.setVarFileOutputContext(new DefaultFileOutputContext(ResultListOutput.VARFILENAME + problemId));
-        this.setFunFileOutputContext(new DefaultFileOutputContext(ResultListOutput.FUNFILENAME + problemId));
+        this.setVarFileOutputContext(new DefaultFileOutputContext(System.getenv("RESULTSPATH")
+                + File.separator + ResultListOutput.VARFILENAME + problemId + System.getenv("RESULTSEXTENSION")));
+        this.setFunFileOutputContext(new DefaultFileOutputContext(System.getenv("RESULTSPATH")
+                + File.separator + ResultListOutput.FUNFILENAME + problemId+ System.getenv("RESULTSEXTENSION")));
         this.resultsPayload = new HashMap<>();
         this.resultsPayload.put("id", problemId);
     }

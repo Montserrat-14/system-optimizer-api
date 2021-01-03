@@ -11,6 +11,8 @@ RUN mvn -f /home/app/pom.xml clean package
 # Package stage
 #
 FROM openjdk:11-jre-slim
+ENV RESULTSPATH="resources"
+ENV RESULTSEXTENSION=".csv"
 COPY --from=build /home/app/ADS.owl ADS.owl
 COPY --from=build /home/app/target/systemoptimizer-0.0.1-SNAPSHOT.jar /usr/local/lib/demo.jar
 EXPOSE 8080
