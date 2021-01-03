@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000", "http://localhost:80"})
 @RestController
 public class ProblemController {
 
@@ -40,7 +40,7 @@ public class ProblemController {
             return new ResponseEntity<>("Erro Interno", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        listOfAlgorithms = SwrlAPI.getAlgorithms(problem.getnObjectives());
+        //listOfAlgorithms = SwrlAPI.getAlgorithms(problem.getnObjectives());
 
         System.out.println("New Problem Added: " + problem.getName());
         System.out.println(listOfAlgorithms.toString());

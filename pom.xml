@@ -46,11 +46,46 @@
 			<version>2.0.8</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.uma.jmetal/jmetal-core -->
 		<dependency>
 			<groupId>org.uma.jmetal</groupId>
-			<artifactId>jmetal-core</artifactId>
+			<artifactId>jmetal-problem</artifactId>
 			<version>5.10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.uma.jmetal</groupId>
+			<artifactId>jmetal-algorithm</artifactId>
+			<version>5.10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.uma.jmetal</groupId>
+			<artifactId>jmetal-exec</artifactId>
+			<version>5.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.uma.jmetal</groupId>
+			<artifactId>jmetal-example</artifactId>
+			<version>5.10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.uma.jmetal</groupId>
+			<artifactId>jmetal-auto</artifactId>
+			<version>5.10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.uma.jmetal</groupId>
+			<artifactId>jmetal-lab</artifactId>
+			<version>5.10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.12</version>
 		</dependency>
 
 	</dependencies>
