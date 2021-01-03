@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000", "http://localhost:80"})
 @RestController
 public class ProblemController {
 
