@@ -1,4 +1,4 @@
-package com.montserrat14.systemoptimizer.model;
+package com.montserrat14.systemoptimizer.model.problem;
 
 import java.util.ArrayList;
 import java.util.List;

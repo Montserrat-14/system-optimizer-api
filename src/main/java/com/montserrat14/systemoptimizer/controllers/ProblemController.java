@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.montserrat14.systemoptimizer.SwrlAPI;
-import com.montserrat14.systemoptimizer.model.Problem;
+import com.montserrat14.systemoptimizer.model.problem.Problem;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
