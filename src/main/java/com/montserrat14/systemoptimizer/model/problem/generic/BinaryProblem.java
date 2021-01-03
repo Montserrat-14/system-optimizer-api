@@ -1,19 +1,28 @@
 package com.montserrat14.systemoptimizer.model.problem.generic;
 
+import com.montserrat14.systemoptimizer.example.model.Example;
+import com.montserrat14.systemoptimizer.example.model.ExampleResult;
+import com.montserrat14.systemoptimizer.example.model.Vars;
 import com.montserrat14.systemoptimizer.model.problem.Problem;
 import com.montserrat14.systemoptimizer.model.problem.factory.Problems;
+import org.springframework.web.client.RestTemplate;
 import org.uma.jmetal.problem.binaryproblem.impl.AbstractBinaryProblem;
 import org.uma.jmetal.solution.binarysolution.BinarySolution;
+import org.uma.jmetal.util.binarySet.BinarySet;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
 public class BinaryProblem extends AbstractBinaryProblem implements Problems {
 
+    private Problem problem;
     private int[] bitsPerVariable ;
 
     @Override
     public void createProblem(Problem problem) {
+
+        this.problem = problem;
 
         setName(problem.getName());
 
@@ -37,25 +46,28 @@ public class BinaryProblem extends AbstractBinaryProblem implements Problems {
 
     @Override
     public void evaluate(BinarySolution binarySolution) {
-        int counterOnes;
-        int counterZeroes;
 
-        counterOnes = 0;
-        counterZeroes = 0;
+        List<BinarySet> binarySets = binarySolution.getVariables();
 
-        BitSet bitset = binarySolution.getVariable(0) ;
+        // Create the Rest Template
+        RestTemplate restTemplate = new RestTemplate();
+        Example newExampleBinary = new Example();
 
-        for (int i = 0; i < bitset.length(); i++) {
-            if (bitset.get(i)) {
-                counterOnes++;
-            } else {
-                counterZeroes++;
-            }
+        newExampleBinary.setNumberOfObjectives(getNumberOfObjectives());
+
+        List<Vars> vars = new ArrayList<>();
+        for (int i = 0; i < binarySolution.getNumberOfVariables(); i++) {
+            vars.add(new Vars(String.valueOf(binarySets.get(i))));
         }
 
-        // OneZeroMax is a maximization problem: multiply by -1 to minimize
-        binarySolution.setObjective(0, -1.0 * counterOnes);
-        binarySolution.setObjective(1, -1.0 * counterZeroes);
+        newExampleBinary.setVars(vars);
+
+        ExampleResult result = restTemplate.postForObject(problem.getEndpoint(), newExampleBinary, ExampleResult.class);
+
+        // Set the Result
+        for (int i = 0; i < newExampleBinary.getNumberOfObjectives(); i++) {
+            binarySolution.setObjective(i,Double.parseDouble(result.getObjectives().get(i).getValue()));
+        }
     }
 
 

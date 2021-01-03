@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DoubleProblem extends AbstractDoubleProblem implements Problems {
+
     private Problem problem;
 
     @Override
@@ -39,13 +40,13 @@ public class DoubleProblem extends AbstractDoubleProblem implements Problems {
 
     @Override
     public void evaluate(DoubleSolution doubleSolution) {
-        double aux, xi, xj;
-        double[] fx = new double[getNumberOfObjectives()];
+
         double[] x = new double[getNumberOfVariables()];
         for (int i = 0; i < doubleSolution.getNumberOfVariables(); i++) {
             x[i] = doubleSolution.getVariable(i) ;
         }
 
+        // Create the Rest Template
         RestTemplate restTemplate = new RestTemplate();
         Example newExampleDouble = new Example();
 
@@ -60,6 +61,7 @@ public class DoubleProblem extends AbstractDoubleProblem implements Problems {
 
         ExampleResult result = restTemplate.postForObject(problem.getEndpoint(), newExampleDouble, ExampleResult.class);
 
+        // Set the Result
         for (int i = 0; i < doubleSolution.getNumberOfVariables(); i++) {
             doubleSolution.setObjective(0, Double.parseDouble(result.getObjectives().get(i).getValue()));
         }
