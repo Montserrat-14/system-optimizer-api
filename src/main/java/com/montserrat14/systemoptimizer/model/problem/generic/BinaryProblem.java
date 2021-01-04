@@ -61,7 +61,7 @@ public class BinaryProblem extends AbstractBinaryProblem implements Problems {
 
         newExampleBinary.setVars(vars);
 
-        ExampleResult result = restTemplate.postForObject(problemRequest.getEndpoint(), newExampleBinary, ExampleResult.class);
+        ExampleResult result = restTemplate.postForObject(problemRequest.getEndpoint().replaceFirst("localhost", "backend"), newExampleBinary, ExampleResult.class);
 
         // Set the Result
         for (int i = 0; i < newExampleBinary.getNumberOfObjectives(); i++) {

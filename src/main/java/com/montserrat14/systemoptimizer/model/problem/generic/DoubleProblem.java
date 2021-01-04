@@ -26,15 +26,15 @@ public class DoubleProblem extends AbstractDoubleProblem implements Problems {
         setNumberOfVariables(problemRequest.getListOfVariables().size());
         setNumberOfObjectives(problemRequest.getnObjectives());
 
-        List<Double> lowerLimit = new ArrayList<>(getNumberOfVariables()) ;
-        List<Double> upperLimit = new ArrayList<>(getNumberOfVariables()) ;
+        List<Double> lowerLimit = new ArrayList<>(getNumberOfVariables());
+        List<Double> upperLimit = new ArrayList<>(getNumberOfVariables());
 
         for (int i = 0; i < getNumberOfVariables(); i++) {
             lowerLimit.add(Double.valueOf(problemRequest.getListOfVariables().get(i).getMin()));
             upperLimit.add(Double.valueOf(problemRequest.getListOfVariables().get(i).getMax()));
         }
 
-        setVariableBounds(lowerLimit,upperLimit);
+        setVariableBounds(lowerLimit, upperLimit);
 
     }
 
@@ -43,7 +43,7 @@ public class DoubleProblem extends AbstractDoubleProblem implements Problems {
 
         double[] x = new double[getNumberOfVariables()];
         for (int i = 0; i < doubleSolution.getNumberOfVariables(); i++) {
-            x[i] = doubleSolution.getVariable(i) ;
+            x[i] = doubleSolution.getVariable(i);
         }
 
         // Create the Rest Template
@@ -59,7 +59,7 @@ public class DoubleProblem extends AbstractDoubleProblem implements Problems {
 
         newExampleDouble.setVars(vars);
 
-        ExampleResult result = restTemplate.postForObject(problemRequest.getEndpoint(), newExampleDouble, ExampleResult.class);
+        ExampleResult result = restTemplate.postForObject(problemRequest.getEndpoint().replaceFirst("localhost", "backend"), newExampleDouble, ExampleResult.class);
 
         // Set the Result
         for (int i = 0; i < doubleSolution.getNumberOfObjectives(); i++) {

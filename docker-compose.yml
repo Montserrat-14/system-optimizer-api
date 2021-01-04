@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  angular:
+    container_name: angular
+    image: diogomfernandes/system-optimizer-ui
+    ports:
+      - 3000:80
+    networks:
+      - system-optimizer
+  backend:
+    container_name: backend
+    image: henriquepcabral/system-optimizer-api
+    ports:
+      - 3080:8080
+    networks:
+      - system-optimizer
+
+networks:
+  system-optimizer:
+    driver: bridge

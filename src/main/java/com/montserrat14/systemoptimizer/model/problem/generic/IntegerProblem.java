@@ -64,7 +64,7 @@ public class IntegerProblem extends AbstractIntegerProblem implements Problems {
 
         newExampleInteger.setVars(vars);
 
-        ExampleResult result = restTemplate.postForObject(problemRequest.getEndpoint(), newExampleInteger, ExampleResult.class);
+        ExampleResult result = restTemplate.postForObject(problemRequest.getEndpoint().replaceFirst("localhost", "backend"), newExampleInteger, ExampleResult.class);
 
         // Set the Result
         integerSolution.setObjective(0, Integer.parseInt(result.getObjectives().get(0).getValue()));
