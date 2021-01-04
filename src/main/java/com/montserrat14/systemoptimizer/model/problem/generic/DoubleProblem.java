@@ -3,7 +3,7 @@ package com.montserrat14.systemoptimizer.model.problem.generic;
 import com.montserrat14.systemoptimizer.example.model.Example;
 import com.montserrat14.systemoptimizer.example.model.ExampleResult;
 import com.montserrat14.systemoptimizer.example.model.Vars;
-import com.montserrat14.systemoptimizer.model.problem.Problem;
+import com.montserrat14.systemoptimizer.model.problem.ProblemRequest;
 import com.montserrat14.systemoptimizer.model.problem.factory.Problems;
 import org.springframework.web.client.RestTemplate;
 import org.uma.jmetal.problem.doubleproblem.impl.AbstractDoubleProblem;
@@ -14,24 +14,24 @@ import java.util.List;
 
 public class DoubleProblem extends AbstractDoubleProblem implements Problems {
 
-    private Problem problem;
+    private ProblemRequest problemRequest;
 
     @Override
-    public void createProblem(Problem problem) {
+    public void createProblem(ProblemRequest problemRequest) {
 
-        this.problem = problem;
+        this.problemRequest = problemRequest;
 
-        setName(problem.getName());
+        setName(problemRequest.getName());
 
-        setNumberOfVariables(problem.getListOfVariables().size());
-        setNumberOfObjectives(problem.getnObjectives());
+        setNumberOfVariables(problemRequest.getListOfVariables().size());
+        setNumberOfObjectives(problemRequest.getnObjectives());
 
         List<Double> lowerLimit = new ArrayList<>(getNumberOfVariables()) ;
         List<Double> upperLimit = new ArrayList<>(getNumberOfVariables()) ;
 
         for (int i = 0; i < getNumberOfVariables(); i++) {
-            lowerLimit.add(Double.valueOf(problem.getListOfVariables().get(i).getMin()));
-            upperLimit.add(Double.valueOf(problem.getListOfVariables().get(i).getMax()));
+            lowerLimit.add(Double.valueOf(problemRequest.getListOfVariables().get(i).getMin()));
+            upperLimit.add(Double.valueOf(problemRequest.getListOfVariables().get(i).getMax()));
         }
 
         setVariableBounds(lowerLimit,upperLimit);
@@ -59,13 +59,16 @@ public class DoubleProblem extends AbstractDoubleProblem implements Problems {
 
         newExampleDouble.setVars(vars);
 
-        ExampleResult result = restTemplate.postForObject(problem.getEndpoint(), newExampleDouble, ExampleResult.class);
+        ExampleResult result = restTemplate.postForObject(problemRequest.getEndpoint(), newExampleDouble, ExampleResult.class);
 
         // Set the Result
-        for (int i = 0; i < doubleSolution.getNumberOfVariables(); i++) {
-            doubleSolution.setObjective(0, Double.parseDouble(result.getObjectives().get(i).getValue()));
+        for (int i = 0; i < doubleSolution.getNumberOfObjectives(); i++) {
+            doubleSolution.setObjective(i, Double.parseDouble(result.getObjectives().get(i).getValue()));
         }
 
     }
 
+    public ProblemRequest getProblem() {
+        return this.problemRequest;
+    }
 }

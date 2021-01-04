@@ -1,6 +1,5 @@
 package com.montserrat14.systemoptimizer.controllers;
 
-import com.montserrat14.systemoptimizer.model.Problem;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

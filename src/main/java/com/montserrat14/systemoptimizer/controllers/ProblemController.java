@@ -3,8 +3,11 @@ package com.montserrat14.systemoptimizer.controllers;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.montserrat14.systemoptimizer.SwrlAPI;
-import com.montserrat14.systemoptimizer.model.problem.Problem;
+import com.montserrat14.systemoptimizer.algorithms.AlgorithmGenericBuilder;
+import com.montserrat14.systemoptimizer.knowledgeBase.SwrlSingleton;
+import com.montserrat14.systemoptimizer.model.problem.ProblemRequest;
+import com.montserrat14.systemoptimizer.model.problem.factory.ProblemFactory;
+import com.montserrat14.systemoptimizer.model.problem.factory.Problems;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +20,7 @@ public class ProblemController {
     ObjectMapper objectMapper = new ObjectMapper();
     Random r = new Random();
 
-    Map<Integer,Problem> problems = new HashMap<>();
+    Map<Integer, ProblemRequest> problems = new HashMap<>();
 
     @RequestMapping(
             value = "/problem",
@@ -30,7 +33,7 @@ public class ProblemController {
             return new ResponseEntity<>("Body Vazio", HttpStatus.NOT_ACCEPTABLE);
         }
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        Problem problem = objectMapper.readValue(problemRequest,Problem.class);
+        ProblemRequest problem = objectMapper.readValue(problemRequest, ProblemRequest.class);
 
         problem.setId(r.nextInt(1000) + 1);
         problems.put(problem.getId(),problem);
@@ -39,26 +42,44 @@ public class ProblemController {
         if (problem.getnObjectives() == null) {
             return new ResponseEntity<>("Erro Interno", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        SwrlSingleton swrl = SwrlSingleton.getInstance();
+        swrl.createOntology();
+        listOfAlgorithms = swrl.getAlgorithms(problem.getnObjectives());
 
-        //listOfAlgorithms = SwrlAPI.getAlgorithms(problem.getnObjectives());
+        if(listOfAlgorithms.size() == 0 ) {
+        //TODO: Some error
+        }
 
-        System.out.println("New Problem Added: " + problem.getName());
-        System.out.println(listOfAlgorithms.toString());
+        ProblemFactory problemFactory = new ProblemFactory();
+        Problems newProblem = problemFactory.getProblem(problem);
 
-        return new ResponseEntity<>(problem, HttpStatus.OK);
+        AlgorithmGenericBuilder algBuilder = new AlgorithmGenericBuilder();
+        algBuilder.setProblem(newProblem);
+
+        for(String algName :  listOfAlgorithms){
+            try {
+                algBuilder.findSpecificAlgorithm(algName).setConstructors().setInstance().runAlgorithm().getResults();
+                break;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return new ResponseEntity<>(algBuilder.getResponse(), HttpStatus.OK);
     }
 
     @PutMapping(value="/problem/{id}")
     public void updateProblemName(@PathVariable("id") Integer id, @RequestParam String name){
-        Problem problem = problems.get(id);
+        ProblemRequest problemRequest = problems.get(id);
 
-        problem.setName(name);
+        problemRequest.setName(name);
 
-        problems.put(id,problem);
+        problems.put(id, problemRequest);
     }
 
     @GetMapping("/problem")
-    public ResponseEntity<Map<Integer,Problem>> getProblem(){
+    public ResponseEntity<Map<Integer, ProblemRequest>> getProblem(){
         return new ResponseEntity<>(problems, HttpStatus.OK);
     }
 
