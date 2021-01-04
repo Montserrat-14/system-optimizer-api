@@ -59,7 +59,7 @@ public class DoubleProblem extends AbstractDoubleProblem implements Problems {
 
         newExampleDouble.setVars(vars);
 
-        ExampleResult result = restTemplate.postForObject(problemRequest.getEndpoint().replaceFirst("localhost", "backend"), newExampleDouble, ExampleResult.class);
+        ExampleResult result = restTemplate.postForObject(problemRequest.getEndpoint(), newExampleDouble, ExampleResult.class);
 
         // Set the Result
         for (int i = 0; i < doubleSolution.getNumberOfObjectives(); i++) {
