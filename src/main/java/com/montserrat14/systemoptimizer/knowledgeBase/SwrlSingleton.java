@@ -74,7 +74,7 @@ public class SwrlSingleton {
                 SQWRLResult result = queryEngine.runSQWRLQuery("getAlgorithms", query);
 
                 while (result.next()) {
-                    output.add(result.getNamedIndividual("alg").getShortName());
+                    output.add(result.getNamedIndividual("alg").getShortName().substring(1));
                 }
                 break;
 

@@ -3,7 +3,7 @@ package com.montserrat14.systemoptimizer.model.problem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Problem {
+public class ProblemRequest {
 
     private Integer id;
     private String name;
@@ -16,9 +16,9 @@ public class Problem {
     private String payload;
     private Integer duration;
 
-    public Problem(){}
+    public ProblemRequest(){}
 
-    public Problem(Integer id, String name, String description,Integer nObjectives, String endpoint, String payload, Integer duration) {
+    public ProblemRequest(Integer id, String name, String description, Integer nObjectives, String endpoint, String payload, Integer duration) {
         this.id = id;
         this.name = name;
         this.description = description;

@@ -3,7 +3,7 @@ package com.montserrat14.systemoptimizer.model.problem.generic;
 import com.montserrat14.systemoptimizer.example.model.Example;
 import com.montserrat14.systemoptimizer.example.model.ExampleResult;
 import com.montserrat14.systemoptimizer.example.model.Vars;
-import com.montserrat14.systemoptimizer.model.problem.Problem;
+import com.montserrat14.systemoptimizer.model.problem.ProblemRequest;
 import com.montserrat14.systemoptimizer.model.problem.factory.Problems;
 import org.springframework.web.client.RestTemplate;
 import org.uma.jmetal.problem.binaryproblem.impl.AbstractBinaryProblem;
@@ -11,28 +11,27 @@ import org.uma.jmetal.solution.binarysolution.BinarySolution;
 import org.uma.jmetal.util.binarySet.BinarySet;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.List;
 
 public class BinaryProblem extends AbstractBinaryProblem implements Problems {
 
-    private Problem problem;
+    private ProblemRequest problemRequest;
     private int[] bitsPerVariable ;
 
     @Override
-    public void createProblem(Problem problem) {
+    public void createProblem(ProblemRequest problemRequest) {
 
-        this.problem = problem;
+        this.problemRequest = problemRequest;
 
-        setName(problem.getName());
+        setName(problemRequest.getName());
 
-        setNumberOfVariables(problem.getListOfVariables().size());
-        setNumberOfObjectives(problem.getnObjectives());
+        setNumberOfVariables(problemRequest.getListOfVariables().size());
+        setNumberOfObjectives(problemRequest.getnObjectives());
 
-        bitsPerVariable = new int[problem.getListOfVariables().size()] ;
+        bitsPerVariable = new int[problemRequest.getListOfVariables().size()] ;
 
         bitsPerVariable[0] = 30;
-        for (int var = 1; var < problem.getListOfVariables().size(); var++) {
+        for (int var = 1; var < problemRequest.getListOfVariables().size(); var++) {
             bitsPerVariable[var] = 5;
         }
 
@@ -62,12 +61,16 @@ public class BinaryProblem extends AbstractBinaryProblem implements Problems {
 
         newExampleBinary.setVars(vars);
 
-        ExampleResult result = restTemplate.postForObject(problem.getEndpoint(), newExampleBinary, ExampleResult.class);
+        ExampleResult result = restTemplate.postForObject(problemRequest.getEndpoint(), newExampleBinary, ExampleResult.class);
 
         // Set the Result
         for (int i = 0; i < newExampleBinary.getNumberOfObjectives(); i++) {
             binarySolution.setObjective(i,Double.parseDouble(result.getObjectives().get(i).getValue()));
         }
+    }
+
+    public ProblemRequest getProblem(){
+        return this.problemRequest;
     }
 
 

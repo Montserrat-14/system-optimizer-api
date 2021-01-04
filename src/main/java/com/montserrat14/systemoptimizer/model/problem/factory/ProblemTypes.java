@@ -2,9 +2,9 @@ package com.montserrat14.systemoptimizer.model.problem.factory;
 
 public enum ProblemTypes {
 
-    INTEGER("INTEGER"),
-    DOUBLE("DOUBLE"),
-    BINARY("BINARY");
+    INTEGER("int"),
+    DOUBLE("double"),
+    BINARY("bool");
 
     private String type;
 
