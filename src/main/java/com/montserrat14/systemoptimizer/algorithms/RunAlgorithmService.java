@@ -47,7 +47,7 @@ public class RunAlgorithmService {
                     .runAlgorithm().getLastTimeExecution();
 
             double problemTimeInSeconds = problemTime * 60;
-            int iterations = (int)(evaluationTime / problemTimeInSeconds);
+            int iterations = (int)(problemTimeInSeconds / evaluationTime);
 
             System.out.println("Iterations: " + iterations);
 
