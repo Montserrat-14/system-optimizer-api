@@ -19,5 +19,7 @@ ENV RESULTSPATH="resources"
 ENV RESULTSEXTENSION=".csv"
 COPY --from=build /home/app/ADS.owl ADS.owl
 COPY --from=build /home/app/target/systemoptimizer-0.0.1-SNAPSHOT.jar /usr/local/lib/demo.jar
+RUN mkdir -p $RESULTSPATH
+
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/usr/local/lib/demo.jar"]
