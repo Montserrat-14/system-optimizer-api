@@ -35,7 +35,7 @@ docker-compose pull
 
 ### Run
 ```batch
-docker-compose run
+docker-compose up
 ```
 
 
