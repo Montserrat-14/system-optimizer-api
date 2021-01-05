@@ -1,16 +1,21 @@
 package com.montserrat14.systemoptimizer.algorithms;
 
+import com.montserrat14.systemoptimizer.exception.AlgorithmsException;
+import com.montserrat14.systemoptimizer.exception.SystemOptimizerException;
 import com.montserrat14.systemoptimizer.model.problem.factory.Problems;
+import com.montserrat14.systemoptimizer.utils.TimeUtils;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.AlgorithmBuilder;
 import org.uma.jmetal.problem.Problem;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class AlgorithmGenericBuilder {
@@ -21,6 +26,9 @@ public class AlgorithmGenericBuilder {
     private Object algorithmInstance;
     private Algorithm algorithm;
     private HashMap<String, Object> results;
+    private Method setMaxEvaluations;
+
+    private Double evaluationTimeExecution;
 
     public AlgorithmGenericBuilder setProblem(Problems problem) {
         this.problem = problem;
@@ -32,9 +40,9 @@ public class AlgorithmGenericBuilder {
         return this;
     }
 
-    public AlgorithmGenericBuilder setConstructors() throws Exception {
+    public AlgorithmGenericBuilder setConstructors() throws AlgorithmsException {
         if (algorithmToInstatiate == null) {
-            throw new Exception("No algorithm to instatiate");
+            throw new AlgorithmsException("No algorithm to instantiate");
         }
 
         this.constructorsToTryInstatiation = Arrays.stream(algorithmToInstatiate.getDeclaredConstructors())
@@ -43,9 +51,23 @@ public class AlgorithmGenericBuilder {
         return this;
     }
 
-    public AlgorithmGenericBuilder setInstance() throws Exception {
+    public AlgorithmGenericBuilder getMaxMethod() throws AlgorithmsException, SystemOptimizerException {
+
+       this.setMaxEvaluations = AlgorithmsUtils.getMaxMethod(this.algorithmToInstatiate);
+
+        return this;
+    }
+
+    public AlgorithmGenericBuilder setMaxEvals(int maxValue) throws InvocationTargetException, IllegalAccessException {
+
+        this.setMaxEvaluations.invoke(algorithmInstance,maxValue);
+
+        return this;
+    }
+
+    public AlgorithmGenericBuilder setInstance() throws AlgorithmsException {
         if (this.algorithmToInstatiate == null || this.constructorsToTryInstatiation == null) {
-            throw new Exception("No algorithm to instatiate");
+            throw new AlgorithmsException("No algorithm to instantiate");
         }
 
         HashMap<Class, Object> paramsByType = AlgorithmsUtils.getDefaultParams((Problem) problem);
@@ -72,7 +94,7 @@ public class AlgorithmGenericBuilder {
             }
         }
 
-        throw new Exception("No algorithm instance");
+        throw new AlgorithmsException("No algorithm instance");
     }
 
     public AlgorithmGenericBuilder runAlgorithm() throws Exception {
@@ -83,7 +105,9 @@ public class AlgorithmGenericBuilder {
             this.algorithm = (Algorithm<?>) this.algorithmInstance;
         }
 
+        TimeUtils.timeStart();
         this.algorithm.run();
+        evaluationTimeExecution = TimeUtils.timeEnd();
 
         return this;
     }
@@ -97,6 +121,10 @@ public class AlgorithmGenericBuilder {
 
     public HashMap<String, Object> getResponse() {
         return results;
+    }
+
+    public Double getLastTimeExecution() {
+        return evaluationTimeExecution;
     }
 
 }
