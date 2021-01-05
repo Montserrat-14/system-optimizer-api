@@ -42,33 +42,25 @@ public class IntegerProblem extends AbstractIntegerProblem implements Problems {
     @Override
     public void evaluate(IntegerSolution integerSolution) {
 
-        int approximationToN = 0;
-        int approximationToM = 0 ;
-        int valueN = 100;
-        int valueM = -100 ;
-
+        List<Vars> vars = new ArrayList<>();
         for (int i = 0; i < integerSolution.getNumberOfVariables(); i++) {
-            int value = integerSolution.getVariable(i) ;
-            approximationToN += Math.abs(valueN - value) ;
-            approximationToM += Math.abs(valueM - value) ;
+            vars.add(new Vars(String.valueOf(integerSolution.getVariable(i))));
         }
+
         // Create the Rest Template
         RestTemplate restTemplate = new RestTemplate();
         Example newExampleInteger = new Example();
 
         newExampleInteger.setNumberOfObjectives(getNumberOfObjectives());
-
-        List<Vars> vars = new ArrayList<>();
-        vars.add(new Vars(String.valueOf(approximationToN)));
-        vars.add(new Vars(String.valueOf(approximationToM)));
-
         newExampleInteger.setVars(vars);
 
         ExampleResult result = restTemplate.postForObject(problemRequest.getEndpoint(), newExampleInteger, ExampleResult.class);
 
         // Set the Result
-        integerSolution.setObjective(0, Integer.parseInt(result.getObjectives().get(0).getValue()));
-        integerSolution.setObjective(1, Integer.parseInt(result.getObjectives().get(1).getValue()));
+        for (int i = 0; i < integerSolution.getNumberOfObjectives(); i++) {
+            integerSolution.setObjective(i, Double.parseDouble(result.getObjectives().get(i).getValue()));
+        }
+
     }
 
     public ProblemRequest getProblem() {

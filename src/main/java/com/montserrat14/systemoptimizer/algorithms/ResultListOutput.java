@@ -66,12 +66,12 @@ public class ResultListOutput extends SolutionListOutput {
 
     private ArrayList<HashMap<String, Object>> getObjectivesList(List<? extends Solution<?>> solutionList, Integer index) {
         ArrayList<HashMap<String, Object>> objectives = new ArrayList<>();
-        HashMap<String, Object> objectiveObject = new HashMap<>();
+
 
         int numberOfObjectives = solutionList.get(0).getNumberOfObjectives();
 
         for(int i = 0; i < numberOfObjectives; i++) {
-            objectiveObject.clear();
+            HashMap<String, Object> objectiveObject = new HashMap<>();
             objectiveObject.put("value", solutionList.get(index).getObjective(i));
             objectives.add(objectiveObject);
         }
