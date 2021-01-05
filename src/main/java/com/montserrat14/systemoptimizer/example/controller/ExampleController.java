@@ -32,7 +32,7 @@ public class ExampleController {
     public ResponseEntity<Object> exampleDouble(@RequestBody String exampleRequest) throws JsonProcessingException {
 
         if(exampleRequest.isEmpty()) {
-            return new ResponseEntity<>("Body Vazio", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Empty Body", HttpStatus.NOT_ACCEPTABLE);
         }
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         Example example = objectMapper.readValue(exampleRequest, Example.class);
@@ -88,7 +88,7 @@ public class ExampleController {
     public ResponseEntity<Object> exampleInteger(@RequestBody String exampleRequest) throws JsonProcessingException {
 
         if(exampleRequest.isEmpty()) {
-            return new ResponseEntity<>("Body Vazio", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Empty Body", HttpStatus.NOT_ACCEPTABLE);
         }
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         Example example = objectMapper.readValue(exampleRequest, Example.class);
@@ -133,7 +133,7 @@ public class ExampleController {
     public ResponseEntity<Object> exampleBinary(@RequestBody String exampleRequest) throws JsonProcessingException {
 
         if(exampleRequest.isEmpty()) {
-            return new ResponseEntity<>("Body Vazio", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Empty Body", HttpStatus.NOT_ACCEPTABLE);
         }
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         Example example = objectMapper.readValue(exampleRequest, Example.class);

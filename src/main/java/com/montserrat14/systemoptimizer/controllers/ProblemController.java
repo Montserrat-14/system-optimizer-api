@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.montserrat14.systemoptimizer.algorithms.AlgorithmGenericBuilder;
+import com.montserrat14.systemoptimizer.algorithms.RunAlgorithmService;
+import com.montserrat14.systemoptimizer.exception.AlgorithmsException;
+import com.montserrat14.systemoptimizer.exception.SystemOptimizerException;
 import com.montserrat14.systemoptimizer.knowledgeBase.SwrlSingleton;
 import com.montserrat14.systemoptimizer.model.problem.ProblemRequest;
 import com.montserrat14.systemoptimizer.model.problem.factory.ProblemFactory;
@@ -24,63 +27,29 @@ public class ProblemController {
 
     @RequestMapping(
             value = "/problem",
-            //method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Object> postBody(@RequestBody String problemRequest) throws JsonProcessingException {
+    public ResponseEntity<Object> postBody(@RequestBody String request) throws JsonProcessingException, AlgorithmsException, SystemOptimizerException {
 
-        if(problemRequest.isEmpty()) {
-            return new ResponseEntity<>("Body Vazio", HttpStatus.NOT_ACCEPTABLE);
-        }
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        ProblemRequest problem = objectMapper.readValue(problemRequest, ProblemRequest.class);
-
-        problem.setId(r.nextInt(1000) + 1);
-        problems.put(problem.getId(),problem);
-
-        ArrayList<String> listOfAlgorithms = new ArrayList<String>();
-        if (problem.getnObjectives() == null) {
-            return new ResponseEntity<>("Erro Interno", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        SwrlSingleton swrl = SwrlSingleton.getInstance();
-        swrl.createOntology();
-        listOfAlgorithms = swrl.getAlgorithms(problem.getnObjectives());
-
-        if(listOfAlgorithms.size() == 0 ) {
-        //TODO: Some error
+        if (request.isEmpty()) {
+            return new ResponseEntity<>("Empty Body", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        ProblemFactory problemFactory = new ProblemFactory();
-        Problems newProblem = problemFactory.getProblem(problem);
+        try {
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            ProblemRequest problem = objectMapper.readValue(request, ProblemRequest.class);
+            problem.setId(r.nextInt(10000) + 1);
+            problems.put(problem.getId(), problem);
 
-        AlgorithmGenericBuilder algBuilder = new AlgorithmGenericBuilder();
-        algBuilder.setProblem(newProblem);
-
-        for(String algName :  listOfAlgorithms){
-            try {
-                algBuilder.findSpecificAlgorithm(algName).setConstructors().setInstance().runAlgorithm().getResults();
-                break;
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (problem.getnObjectives() == null) {
+                throw new SystemOptimizerException("There are no Objectives");
             }
 
+            return new ResponseEntity<>(RunAlgorithmService.run(problem), HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(algBuilder.getResponse(), HttpStatus.OK);
     }
-
-    @PutMapping(value="/problem/{id}")
-    public void updateProblemName(@PathVariable("id") Integer id, @RequestParam String name){
-        ProblemRequest problemRequest = problems.get(id);
-
-        problemRequest.setName(name);
-
-        problems.put(id, problemRequest);
-    }
-
-    @GetMapping("/problem")
-    public ResponseEntity<Map<Integer, ProblemRequest>> getProblem(){
-        return new ResponseEntity<>(problems, HttpStatus.OK);
-    }
-
 }

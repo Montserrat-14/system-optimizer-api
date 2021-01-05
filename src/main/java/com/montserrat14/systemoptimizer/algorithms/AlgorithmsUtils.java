@@ -1,5 +1,7 @@
 package com.montserrat14.systemoptimizer.algorithms;
 
+import com.montserrat14.systemoptimizer.exception.AlgorithmsException;
+import com.montserrat14.systemoptimizer.exception.SystemOptimizerException;
 import org.jetbrains.annotations.Nullable;
 import org.reflections.Reflections;
 import org.uma.jmetal.algorithm.Algorithm;
@@ -18,6 +20,7 @@ import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 
+import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Set;
@@ -68,5 +71,28 @@ public class AlgorithmsUtils {
         defaultParamsMap.put(Comparator.class, new DominanceComparator<>());
 
         return defaultParamsMap;
+    }
+
+    public static Method getMaxMethod(Class c) throws SystemOptimizerException {
+
+        if (c == null) {
+            throw new SystemOptimizerException("Class invalid");
+        }
+
+        Method method = null;
+
+        try{
+                method = findMethod(c,"setMaxEvaluations");
+            if(method == null){
+                method = findMethod(c,"setMaxIterations");
+            }
+        }catch (NoSuchMethodException e){
+            throw new SystemOptimizerException("There is no method like setMaxEvaluations or setMaxIterations");
+        }
+        return method;
+    }
+
+    private static Method findMethod(Class c, String name) throws NoSuchMethodException {
+        return  c.getMethod(name,int.class);
     }
 }
