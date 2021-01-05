@@ -54,6 +54,9 @@ public class AlgorithmsUtils {
 
     public static HashMap<Class, Object> getDefaultParams(Problem problem) {
 
+        //TODO: Change the type of Operators depending on Problem Type.
+
+
         HashMap<Class, Object> defaultParamsMap = new HashMap<>();
 
         defaultParamsMap.put(Problem.class, problem);
