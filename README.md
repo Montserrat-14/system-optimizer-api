@@ -5,6 +5,20 @@
 
 ## Architecture Flow
 
+***ProblemController*** receives the POST request with the problem invoking the ***AlgorithmService***.
+***SwrlSingleton***, using SWRL API, is instantiated in order to make the query to the OWL knowledge base. We chose the Singleton architecture to make sure we can only have one instance at a time. This query return a list of the algorithms best suited to the number of the objecitves provided.
+
+We then try to find these algorithms in the jMetal Framework using refletion. When found, a single iteration is ran in order to determine the process time so we can calculate the number of iterations for the user's given time in the problem request. 
+We run the algortithm the number of iterations calculated and return the output - solutions and qualities.
+
+//factory, builder
+
+
+
+## Created examples
+
+We created three test examples, one for each type (double, integer and boolean).
+
 //TODO
 
 
@@ -16,22 +30,15 @@
 
 ### Pull
 ```batch
-docker pull henriquepcabral/system-optimizer-api:latest
+docker-compose pull
 ```
 
 ### Run
 ```batch
-docker run --name backend -dit -p 3080:8080 henriquepcabral/system-optimizer-api:latest
+docker-compose run
 ```
 
-### Build locally
-```batch
-docker build -t system-optimizer-api .
-```
-### Run
-```batch
-docker run --name backend -dit -p 3080:8080 system-optimizer-api
-```
+
 
 
 ## Environment variables
@@ -50,10 +57,6 @@ Docker Enviroment variables were used to facilitate possible modifications witho
 |  FLOAT_DEFAULT_PARAM |  default parameter to float |
 
 
-
-## Created examples
-
-//TODO
 
 ## Used Frameworks
 - Spring Boot
