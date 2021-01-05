@@ -54,16 +54,15 @@ public class AlgorithmsUtils {
 
     public static HashMap<Class, Object> getDefaultParams(Problem problem) {
 
-        //TODO: Improve this values and create env vars for this values
         HashMap<Class, Object> defaultParamsMap = new HashMap<>();
 
         defaultParamsMap.put(Problem.class, problem);
-        defaultParamsMap.put(int.class, 100);
-        defaultParamsMap.put(Integer.class, 100);
-        defaultParamsMap.put(Double.class, 100.00);
-        defaultParamsMap.put(double.class, 100.00);
-        defaultParamsMap.put(Float.class, 100.00);
-        defaultParamsMap.put(float.class,100.00);
+        defaultParamsMap.put(int.class, System.getenv("INTEGER_DEFAULT_PARAM"));
+        defaultParamsMap.put(Integer.class, System.getenv("INTEGER_DEFAULT_PARAM"));
+        defaultParamsMap.put(Double.class, System.getenv("DOUBLE_DEFAULT_PARAM"));
+        defaultParamsMap.put(double.class, System.getenv("DOUBLE_DEFAULT_PARAM"));
+        defaultParamsMap.put(Float.class, System.getenv("FLOAT_DEFAULT_PARAM"));
+        defaultParamsMap.put(float.class, System.getenv("FLOAT_DEFAULT_PARAM"));
         defaultParamsMap.put(CrossoverOperator.class, new SBXCrossover(0.9, 20.0));
         defaultParamsMap.put(MutationOperator.class, new PolynomialMutation(1/problem.getNumberOfVariables(), 20));
         defaultParamsMap.put(SelectionOperator.class, new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()));
