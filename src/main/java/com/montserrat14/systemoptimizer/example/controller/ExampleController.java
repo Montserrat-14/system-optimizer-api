@@ -78,6 +78,75 @@ public class ExampleController {
         return exampleResult;
     }
 
+    @RequestMapping(
+            value = "/client/example/double2",
+            //method = RequestMethod.POST,
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Object> exampleDouble2(@RequestBody String exampleRequest) throws JsonProcessingException {
+
+        if(exampleRequest.isEmpty()) {
+            return new ResponseEntity<>("Empty Body", HttpStatus.NOT_ACCEPTABLE);
+        }
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        Example example = objectMapper.readValue(exampleRequest, Example.class);
+
+        ExampleResult exampleResult = getDoubleEvaluateExample2(example);
+
+        return new ResponseEntity<>(exampleResult, HttpStatus.OK);
+    }
+
+    /**
+     * This code is a "replica" from Kursawe evaluate code
+     * @param example
+     * @return
+     */
+    private ExampleResult getDoubleEvaluateExample2(Example example){
+        int numberOfVariables = example.getVars().size();
+        int numberOfObjectives = example.getNumberOfObjectives();
+        double[] f = new double[numberOfObjectives];
+        double[] x = new double[numberOfVariables];
+        int k = numberOfVariables - numberOfObjectives + 1;
+
+        for(int i = 0; i < numberOfVariables; ++i) {
+            x[i] = Double.parseDouble(example.getVars().get(i).getValue());
+        }
+
+        double g = 0.0D;
+
+        int i;
+        for(i = numberOfVariables - k; i < numberOfVariables; ++i) {
+            g += (x[i] - 0.5D) * (x[i] - 0.5D) - Math.cos(62.83185307179586D * (x[i] - 0.5D));
+        }
+
+        g = 100.0D * ((double)k + g);
+
+        for(i = 0; i < numberOfObjectives; ++i) {
+            f[i] = (1.0D + g) * 0.5D;
+        }
+
+        for(i = 0; i < numberOfObjectives; ++i) {
+            int aux;
+            for(aux = 0; aux < numberOfObjectives - (i + 1); ++aux) {
+                f[i] *= x[aux];
+            }
+
+            if (i != 0) {
+                aux = numberOfObjectives - (i + 1);
+                f[i] *= 1.0D - x[aux];
+            }
+        }
+        List<Vars> resultVars = new ArrayList<>();
+        for(i = 0; i < numberOfObjectives; ++i) {
+            resultVars.add(new Vars(String.valueOf(f[i])));
+        }
+
+        ExampleResult exampleResult = new ExampleResult();
+        exampleResult.setObjectives(resultVars);
+
+        return exampleResult;
+    }
+
 
 
     @RequestMapping(
@@ -154,8 +223,14 @@ public class ExampleController {
         int counterOnes = 0;
         int counterZeroes = 0;
 
-        BitSet bitset = BitSet.valueOf(example.getVars().get(0).getValue().getBytes());
-        System.out.println(bitset);
+        String binary = example.getVars().get(0).getValue();
+
+        BitSet bitset = new BitSet(binary.length());
+        for (int i = 0; i < binary.length(); i++) {
+            if (binary.charAt(i) == '1') {
+                bitset.set(i);
+            }
+        }
 
         for (int i = 0; i < bitset.length(); i++) {
             if (bitset.get(i)) {

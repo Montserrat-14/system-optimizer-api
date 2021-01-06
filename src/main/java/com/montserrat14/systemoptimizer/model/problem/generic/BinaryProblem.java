@@ -16,56 +16,47 @@ import java.util.List;
 public class BinaryProblem extends AbstractBinaryProblem implements Problems {
 
     private ProblemRequest problemRequest;
-    private int[] bitsPerVariable ;
+    private List<Integer> bitsPerVariable;
 
-    @Override
     public void createProblem(ProblemRequest problemRequest) {
 
         this.problemRequest = problemRequest;
 
         setName(problemRequest.getName());
-
         setNumberOfVariables(problemRequest.getListOfVariables().size());
         setNumberOfObjectives(problemRequest.getnObjectives());
 
-        bitsPerVariable = new int[problemRequest.getListOfVariables().size()] ;
+        this.bitsPerVariable = new ArrayList<>();
 
-        bitsPerVariable[0] = 30;
-        for (int var = 1; var < problemRequest.getListOfVariables().size(); var++) {
-            bitsPerVariable[var] = 5;
+        for (int var = 0; var < problemRequest.getListOfVariables().size(); var++) {
+            this.bitsPerVariable.add(problemRequest.getListOfVariables().get(var).getBits());
         }
 
     }
 
-    // We do not use this override method
-    @Override
     public List<Integer> getListOfBitsPerVariable() {
-        return null;
+        return this.bitsPerVariable;
     }
 
-    @Override
     public void evaluate(BinarySolution binarySolution) {
 
-        List<BinarySet> binarySets = binarySolution.getVariables();
+        List<Vars> vars = new ArrayList<>();
+        for (int i = 0; i < binarySolution.getNumberOfVariables(); i++) {
+            vars.add(new Vars(binarySolution.getVariable(i).toString()));
+        }
 
         // Create the Rest Template
         RestTemplate restTemplate = new RestTemplate();
         Example newExampleBinary = new Example();
 
         newExampleBinary.setNumberOfObjectives(getNumberOfObjectives());
-
-        List<Vars> vars = new ArrayList<>();
-        for (int i = 0; i < binarySolution.getNumberOfVariables(); i++) {
-            vars.add(new Vars(String.valueOf(binarySets.get(i))));
-        }
-
         newExampleBinary.setVars(vars);
 
         ExampleResult result = restTemplate.postForObject(problemRequest.getEndpoint(), newExampleBinary, ExampleResult.class);
 
         // Set the Result
-        for (int i = 0; i < newExampleBinary.getNumberOfObjectives(); i++) {
-            binarySolution.setObjective(i,Double.parseDouble(result.getObjectives().get(i).getValue()));
+        for (int i = 0; i < binarySolution.getNumberOfObjectives(); i++) {
+            binarySolution.setObjective(i, Double.parseDouble(result.getObjectives().get(i).getValue()));
         }
     }
 

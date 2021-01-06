@@ -4,7 +4,7 @@ public enum ProblemTypes {
 
     INTEGER("int"),
     DOUBLE("double"),
-    BINARY("bool");
+    BINARY("binary");
 
     private String type;
 

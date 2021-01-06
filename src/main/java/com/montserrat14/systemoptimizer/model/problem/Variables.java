@@ -9,14 +9,16 @@ public class Variables {
     private String type;
     private Integer min;
     private Integer max;
+    private Integer bits;
     private String description;
 
     public Variables(){}
-    public Variables(String name, String type, Integer min, Integer max, String description) {
+    public Variables(String name, String type, Integer min, Integer max, Integer bits, String description) {
         this.name = name;
         this.type = type;
         this.min = min;
         this.max = max;
+        this.bits =  bits;
         this.description = description;
     }
     public Variables(String name, String type, String description) {
@@ -55,6 +57,14 @@ public class Variables {
 
     public void setMax(Integer max) {
         this.max = max;
+    }
+
+    public Integer getBits() {
+        return bits;
+    }
+
+    public void setBits(Integer bits) {
+        this.bits = bits;
     }
 
     public String getDescription() {

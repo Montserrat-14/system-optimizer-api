@@ -6,7 +6,11 @@ import com.montserrat14.systemoptimizer.model.problem.factory.Problems;
 import com.montserrat14.systemoptimizer.utils.TimeUtils;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.AlgorithmBuilder;
+import org.uma.jmetal.operator.crossover.CrossoverOperator;
+import org.uma.jmetal.operator.mutation.MutationOperator;
+import org.uma.jmetal.operator.selection.SelectionOperator;
 import org.uma.jmetal.problem.Problem;
+import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -15,7 +19,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class AlgorithmGenericBuilder {
@@ -84,6 +87,11 @@ public class AlgorithmGenericBuilder {
             try {
                 Object instance = iterableConstructor.newInstance(paramsToConstructor);
                 this.algorithmInstance = instance;
+
+                if(nParams == 1){
+                    return this.setParams(paramsByType);
+                }
+
                 return this;
             } catch (InstantiationException e) {
                 System.err.println(e.getMessage());
@@ -95,6 +103,28 @@ public class AlgorithmGenericBuilder {
         }
 
         throw new AlgorithmsException("No algorithm instance");
+    }
+
+    private AlgorithmGenericBuilder setParams(HashMap<Class, Object>  parameterTypes) {
+        try{
+            Method crossoverMethod = AlgorithmsUtils.getMethodOnAlgorithmBuilder("setCrossoverOperator", this.algorithmToInstatiate, CrossoverOperator.class);
+            crossoverMethod.invoke(this.algorithmInstance,parameterTypes.get(CrossoverOperator.class));
+
+            Method mutationMethod =  AlgorithmsUtils.getMethodOnAlgorithmBuilder("setMutationOperator", this.algorithmToInstatiate, MutationOperator.class);
+            mutationMethod.invoke(this.algorithmInstance, parameterTypes.get(MutationOperator.class));
+
+            Method selectionMethod =  AlgorithmsUtils.getMethodOnAlgorithmBuilder("setSelectionOperator", this.algorithmToInstatiate, SelectionOperator.class);
+            selectionMethod.invoke(this.algorithmInstance, parameterTypes.get(SelectionOperator.class));
+
+            Method evaluatorMethod =  AlgorithmsUtils.getMethodOnAlgorithmBuilder("setSolutionListEvaluator", this.algorithmToInstatiate, SolutionListEvaluator.class);
+            evaluatorMethod.invoke(this.algorithmInstance, parameterTypes.get(SolutionListEvaluator.class));
+
+        } catch(Exception e){
+            System.err.println("It was not possible to set operators");
+        }
+
+
+        return this;
     }
 
     public AlgorithmGenericBuilder runAlgorithm() throws Exception {

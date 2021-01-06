@@ -57,7 +57,7 @@ public class ResultListOutput extends SolutionListOutput {
         for(int i = 0; i < numberOfVariables; i++) {
             HashMap<String, Object> variableObject = new HashMap<>();
             variableObject.put("name", this.problem.getProblem().getListOfVariables().get(i).getName());
-            variableObject.put("value", solutionList.get(index).getVariable(i));
+            variableObject.put("value", solutionList.get(index).getVariable(i).toString());
             variables.add(variableObject);
         }
 
