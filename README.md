@@ -38,17 +38,25 @@ We start by finding the algorithms retrieved by the ***SwrlSingleton*** in the j
 
 ## How to pull and run Docker image
 
-### Pull
+### Pull Backend Docker Image
+```batch
+docker pull henriquepcabral/system-optimizer-api
+```
+
+### Run Backend Container
+```batch
+docker run --name backend -dit -p 3080:8080 henriquepcabral/system-optimizer-api:latest
+```
+
+### Pull Both Images
 ```batch
 docker-compose pull
 ```
 
-### Run
+### Run Both Containers
 ```batch
 docker-compose up -d
 ```
-
-
 
 
 ## Environment variables
