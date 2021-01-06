@@ -17,9 +17,11 @@ We run the algortithm the number of iterations calculated and return the output 
 
 ## Created examples
 
-We created three test examples, one for each type (double, integer and boolean).
-
-//TODO
+### Four examples were created:
+- Double Problem (Kursawe)
+- Integer Problem (NMMin)
+- Binary Problem (OneZeroMax)
+- Double Problem (DTLZ1)
 
 
 ## Process Flow
