@@ -5,14 +5,22 @@
 
 ## Architecture Flow
 
-***ProblemController*** receives the POST request with the problem invoking the ***AlgorithmService***.
-***SwrlSingleton***, using SWRL API, is instantiated in order to make the query to the OWL knowledge base. We chose the Singleton architecture to make sure we can only have one instance at a time. This query return a list of the algorithms best suited to the number of the objecitves provided.
+***ProblemController*** is the main entrypoint of our project, it receives the POST request with the problem invoking the ***AlgorithmService***.
 
-We then try to find these algorithms in the jMetal Framework using refletion. When found, a single iteration is ran in order to determine the process time so we can calculate the number of iterations for the user's given time in the problem request. 
-We run the algortithm the number of iterations calculated and return the output - solutions and qualities.
+***AlgorithmService***, this class is the core of our project, it connects all components in just one place and performs the business logic.
+We start by finding the algorithms retrieved by the ***SwrlSingleton*** in the jMetal Framework using refletion. Then, a single iteration is ran in order to determine the process time so we can calculate the number of iterations for the user's given time in the problem request. Finally, we run the algortithm the number of iterations calculated and return the output - solutions and qualities.
 
-//factory, builder
+***SwrlSingleton***, using SWRL API, is instantiated in order to manage all points of the OWL knowledge base. We chose the Singleton architecture to make sure we can only have one instance at a time. The main goal of this component is to query the best algorithms of a given problem.
 
+***ProblemFactory***, we use Factory pattern in order to instantiate a problem depending on the type that the user selected via browser. We chose this pattern because it's easy to implement and also to expand in the future if we need to add a new type of problem without any effort. With this tactic we can abstract our implementation independently of the problem type.
+
+***AlgorithmGenericBuilder***, is used to build a generic algorithm on jMetal through reflection. Different algorithms can have different specifications this way we can change the methods easily.
+
+## Design Patterns
+- Factory
+- Singleton
+- Builder
+- Reflection
 
 
 ## Created examples
@@ -64,6 +72,7 @@ Docker Enviroment variables were used to facilitate possible modifications witho
 - Spring Boot
 - JMetal
 - SwrlAPI
+- Relfections
 
 
 
