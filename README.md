@@ -38,25 +38,39 @@ We start by finding the algorithms retrieved by the ***SwrlSingleton*** in the j
 
 ## How to pull and run Docker image
 
-### Pull Backend Docker Image
+### Pull and run backend Docker Image from Dockerhub
+#### Pull
 ```batch
 docker pull henriquepcabral/system-optimizer-api
 ```
-
-### Run Backend Container
+#### Run
 ```batch
 docker run --name backend -dit -p 3080:8080 henriquepcabral/system-optimizer-api:latest
 ```
 
-### Pull Both Images
+### Pull and run both images from Dockerhub
+#### Pull
 ```batch
 docker-compose pull
 ```
-
-### Run Both Containers
+#### Run
 ```batch
 docker-compose up -d
 ```
+
+### Pull and run backend local image
+#### Pull
+```batch
+docker build -t system-optimizer-api .
+```
+#### Run
+```batch
+docker run --name backend -dit -p 3080:8080 system-optimizer-api
+```
+
+## How to access to the app after both docker images were running
+
+[http://localhost:3000](http://localhost:3000)
 
 
 ## Environment variables
@@ -82,5 +96,8 @@ Docker Enviroment variables were used to facilitate possible modifications witho
 - SwrlAPI
 - Relfections
 
-
-
+## Authors
+- [Diogo Fernandes](https://github.com/diogormsf)
+- [Francisco Cordeiro](https://github.com/c0rdeiro)
+- [Henrique Cabral](https://github.com/henriquecabral)
+- [Sebastian Cheregi](https://github.com/Seeebas)
